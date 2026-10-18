@@ -86,7 +86,15 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
   frecce circolari, pulsanti a pillola, sfondo = immagine della barra. App `HBCtheme_VinZo`.
 - GX: ricolorazione automatica di azurenight (`tools/gx_theme.py`), 36 pannelli scuriti, 90 icone
   ricolorate, 55 immagini lasciate com'erano, `.them` convertito (msgid + msgstr).
-- Comando unico: `.\build_extras.ps1`. In attesa di copia su D: e test sulla TV.
+- Comando unico: `.\build_extras.ps1`. Copiati su D: (accanto a azurenight e a Material Dark).
+- Ritorno all'aspetto originale dell'HBC: solo cancellando i dati di salvataggio dell'HBC da
+  Gestione dati (hackmii.com, 2010); tra temi si passa aprendo l'app del tema.
+
+## 8. Forwarder di USB Loader GX
+
+- WAD ufficiale dal README di wiidev/usbloadergx: `USBLoaderGX_forwarder[UNEO].wad` → `D:\wad\`.
+- WAD manager: **YAWM ModMii Edition 1.0.1** (OSCWii) → `D:\apps\yawmME\`.
+- Dopo l'installazione: in USB Loader GX → Impostazioni loader → "Ritorna a" = UNEO.
 
 ## 6. Decisioni e preferenze dell'utente
 
