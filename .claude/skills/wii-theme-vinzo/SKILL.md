@@ -74,6 +74,10 @@ Usa `tools/dump_tev.py` per vedere gli stage quando ci sono.
   tra i bordi e la firma va nell'ultimo 8% in alto. La griglia copre il resto: conta la luce
   nei margini e negli spazi tra le schede. Controlla con `tools/simulate_menu.py`.
 
+- **Limite di memoria di `board.ash`:** 1.212.416 byte decompressi (v4/v7) funziona; 1.343.488 (v6,
+  barra 1024x512 CMPR) → **schermo nero dopo la schermata avvertenze**. Tieni `my_BackPic_a` a
+  512x512 CMPR o meno. Gli altri archivi hanno margini diversi: aumenta per piccoli passi.
+
 ## Regole di sicurezza (importanti)
 
 - Non superare di molto gli aumenti di memoria di azurenight per archivio (riferimento:

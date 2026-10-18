@@ -68,7 +68,10 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - **v5**: tinta piatta + fix pulsanti. File: `D:\themes\vinzo_material_dark_v5_4.3E.csm`.
 - **v6**: immagine della barra creata dall'utente (`assets/barra.jpg`, onde viola in basso + "mod by VinZo"
   centrato), texture 1024x512 CMPR (firma leggibile, board +248 KB). File:
-  `D:\themes\vinzo_material_dark_v6_4.3E.csm`. In attesa di test sulla TV.
+  `D:\themes\vinzo_material_dark_v6_4.3E.csm`.
+- Test v6: **schermo nero** dopo la schermata avvertenze. Causa più probabile: board.ash troppo grande
+  (1.34 MB contro 1.21 MB della v4 funzionante). Ripristino: RESET → Priiloader → HBC → csm-installer.
+- **v7**: barra 512x512 CMPR (stessa dimensione della v4). Firma più morbida: meglio ingrandirla nell'immagine.
 
 ## 6. Decisioni e preferenze dell'utente
 
