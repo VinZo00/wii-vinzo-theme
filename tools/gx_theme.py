@@ -29,6 +29,7 @@ KEEP = re.compile(r"^(esrb_|pegi_|cero_|norating|wiimote\d?\.|Wiimote\d|nunchuk|
                   r"balanceboard|guitar|drums|dancepad|microphone|motionplus|wheel|zapper|nintendods|wiispeak|"
                   r"nocover|nodisc|gxlogo)", re.I)
 BACKGROUNDS = ("background.png", "wbackground.png")
+WAVES_STRENGTH = 0.55  # quanto si vedono le onde di barra.jpg nella barra (1 = piene)
 
 
 def rgb_to_hsv(a):
@@ -60,14 +61,37 @@ def blue_mask(h, s):
     return (h > 170 / 360) & (h < 250 / 360) & (s > 0.2)
 
 
-def recolor(img):
-    """Solo gli azzurri diventano viola; il resto dell'immagine resta identico."""
+LUMA = np.array([0.299, 0.587, 0.114], np.float32)
+CARD = (36, 28, 42)
+# Pulsanti grandi della schermata principale: forma/dimensione predefinite, convertiti al tema scuro
+DARK_BUTTONS = re.compile(r"^(menu_button|settings_button|wiimote_poweroff|sdcard|button_install|loader_mode|browser)",
+                          re.I)
+
+
+def to_accent(rgb, m, h, s, v):
+    """Azzurro -> viola mantenendo la luminosità percepita dell'originale (il viola puro a pari V
+    sembra molto più scuro e pesante dell'azzurro)."""
+    new = hsv_to_rgb(np.full(m.sum(), ACCENT_HUE, np.float32), s[m], v[m])
+    target = rgb[m] @ LUMA
+    cur = new @ LUMA
+    k = np.clip((target - cur) / np.maximum(1 - cur, 1e-4), 0, 1)[:, None]
+    return new + (1 - new) * k  # schiarisce verso il bianco fino alla luminosità originale
+
+
+def recolor(img, dark_button=False):
+    """Azzurri -> viola. Con dark_button i grigi chiari diventano scuri e i simboli grigi chiari."""
     a = np.asarray(img.convert("RGBA"), dtype=np.float32) / 255.0
     rgb, alpha = a[..., :3], a[..., 3:]
     h, s, v = rgb_to_hsv(rgb)
     out = rgb.copy()
     m = blue_mask(h, s)
-    out[m] = hsv_to_rgb(np.full(m.sum(), ACCENT_HUE, np.float32), s[m], v[m])
+    if dark_button:
+        out[m] = hsv_to_rgb(np.full(m.sum(), ACCENT_HUE, np.float32), np.maximum(s[m], 0.7), np.maximum(v[m], 0.85))
+        n = ~m & (s < 0.25)
+        t = np.clip((0.92 - v[n]) / 0.45, 0, 1)[:, None]  # sfondo lucido chiaro -> scuro, simbolo grigio -> chiaro
+        out[n] = (np.array(CARD) / 255.0) * (1 - t) + (np.array(WHITE) / 255.0) * t
+    else:
+        out[m] = to_accent(rgb, m, h, s, v)
     res = np.concatenate([np.clip(out, 0, 1), alpha], -1)
     return Image.fromarray((res * 255).astype(np.uint8), "RGBA")
 
@@ -97,7 +121,7 @@ def themed_background(img, waves):
     out[bar] = np.array(BAR) / 255.0 + rel * 0.35
     # onde viola (immagine della barra del tema) schiarite sopra la barra
     wv = np.asarray(waves.convert("RGB").resize((W, H), Image.LANCZOS), dtype=np.float32) / 255.0
-    out[bar] = 1 - (1 - out[bar]) * (1 - wv[bar])  # fusione "screen"
+    out[bar] = 1 - (1 - out[bar]) * (1 - wv[bar] * WAVES_STRENGTH)  # fusione "screen", onde attenuate
     out[line] = hsv_to_rgb(np.full(line.sum(), ACCENT_HUE, np.float32), s[line], v[line])
     return Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8), "RGB").convert("RGBA")
 
@@ -152,7 +176,7 @@ def main():
             counts["invariata"] += 1
             continue  # identica al predefinito: non serve copiarla
         else:
-            im = recolor(im); counts["ricolorata"] += 1
+            im = recolor(im, dark_button=bool(DARK_BUTTONS.match(fn))); counts["ricolorata"] += 1
         im.save(os.path.join(out_img, fn))
     wide = Image.open(os.path.join(out_img, "wbackground.png"))
     preview(wide, (640, 480)).save(os.path.join(out_img, "theme_preview_480p.png"))
