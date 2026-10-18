@@ -90,6 +90,11 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - Ritorno all'aspetto originale dell'HBC: solo cancellando i dati di salvataggio dell'HBC da
   Gestione dati (hackmii.com, 2010); tra temi si passa aprendo l'app del tema.
 
+- Test GX v1 (foto 11:02/11:03): testi neri, griglia con riquadri bianchi, pulsanti troppo grossi.
+  Causa: nel `.them` avevo cambiato i `msgid`, che sono le chiavi → il loader usava i predefiniti.
+- **GX v2**: base = tema predefinito ufficiale di USB Loader GX (scelta dell'utente al posto di azurenight),
+  colori solo nei `msgstr`, pulsanti ridisegnati più piccoli, nessun font personalizzato. Su D:.
+
 ## 8. Forwarder di USB Loader GX
 
 - WAD ufficiale dal README di wiidev/usbloadergx: `USBLoaderGX_forwarder[UNEO].wad` → `D:\wad\`.

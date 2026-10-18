@@ -8,10 +8,14 @@ $py = "$PSScriptRoot\.venv\Scripts\python.exe"
 $tp = "$PSScriptRoot\third_party"
 & $py -I "$PSScriptRoot\tools\hbc_theme.py" "$PSScriptRoot\assets\barra.jpg" `
     "$tp\hbc_material_dark\Roboto-Regular.ttf" "$tp\hbc_material_dark\Roboto-Medium.ttf" "$PSScriptRoot\build\hbc"
-& $py -I "$PSScriptRoot\tools\gx_theme.py" "$tp\gx_azurenight\azurenight.them" "$tp\gx_azurenight\azurenight" `
-    "$PSScriptRoot\assets\barra.jpg" "$PSScriptRoot\build\usbloadergx"
+# Base GX: tema predefinito (data/images + Default.them del sorgente ufficiale wiidev/usbloadergx)
+if (Test-Path "$PSScriptRoot\build\usbloadergx\vinzo") { Remove-Item "$PSScriptRoot\build\usbloadergx\vinzo" -Recurse -Force }
+& $py -I "$PSScriptRoot\tools\gx_theme.py" "$tp\gx_default\Default.them" "$tp\gx_default\images" `
+    "$PSScriptRoot\assets\barra.jpg" "$PSScriptRoot\build\usbloadergx" | Select-Object -First 1
 if (Test-Path "$Drive\apps") {
     Copy-Item "$PSScriptRoot\build\hbc\apps\HBCtheme_VinZo" "$Drive\apps\" -Recurse -Force
+    # la cartella va sostituita, non unita: file rimasti da versioni precedenti (es. font) verrebbero usati
+    if (Test-Path "$Drive\apps\usbloader_gx\theme\vinzo") { Remove-Item "$Drive\apps\usbloader_gx\theme\vinzo" -Recurse -Force }
     Copy-Item "$PSScriptRoot\build\usbloadergx\vinzo.them" "$Drive\apps\usbloader_gx\theme\" -Force
     Copy-Item "$PSScriptRoot\build\usbloadergx\vinzo" "$Drive\apps\usbloader_gx\theme\" -Recurse -Force
     "Copiati su $Drive"

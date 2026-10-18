@@ -121,12 +121,17 @@ cambiano solo l'aspetto delle app.
   "Material Dark" v1.4 di Shining Wing), font Roboto, `theme.xml` con colori VinZo. Sfondo =
   `assets/barra.jpg` (640x480 crop 4:3, `background_wide` 852x480). Si installa aprendo l'app
   `HBCtheme_VinZo` dall'HBC. Anteprima: `tools/simulate_hbc.py`.
-- **USB Loader GX** (`tools/gx_theme.py`): parte da azurenight (`third_party/gx_azurenight`, non nel
-  repo). Azzurri → viola; pannelli chiari grandi (o tasti/tooltip) → scuri; testi neri → bianchi.
-  Esclusi: loghi PEGI/ESRB/CERO, controller, copertine di default, logo GX, cursori. Sfondi da
-  `barra.jpg`. Nel `.them` il valore vero è il **msgstr** (il msgid è il predefinito): si convertono
-  entrambi. Si attiva da USB Loader GX → Impostazioni → Tema → "VinZo Material Dark".
-- Stato: **generati, da provare sulla TV** (18/10/2026).
+- **USB Loader GX** (`tools/gx_theme.py`): base = **tema predefinito del loader** (186 immagini di
+  `data/images` + `Default.them` con tutte le 308 chiavi, da github.com/wiidev/usbloadergx, GPLv3,
+  in `third_party/gx_default`, non nel repo). Pulsanti Wii/impostazioni/HBC/SD/spegni/+ ridisegnati
+  (cerchio scuro al 72% con anello viola); azzurri → viola; pannelli chiari → scuri; testi neri →
+  bianchi. Esclusi: PEGI/ESRB/CERO, controller, copertine di default, logo GX, cursori. Nessun font
+  nel tema → si usa quello originale del loader. Si attiva: Impostazioni → Tema → "VinZo Material Dark".
+- **.them: il `msgid` è la CHIAVE che il loader cerca e NON va mai modificato**; il valore del tema
+  va nel `msgstr`. (Prima versione: msgid modificati → chiavi non trovate → testi neri e riquadri
+  bianchi.) La cartella del tema su D: va **sostituita**, non unita (file vecchi verrebbero usati).
+- Primo tentativo basato su azurenight scartato dall'utente (pulsanti troppo grossi).
+- Stato (18/10/2026): HBC da provare; GX v2 (base predefinita) copiato su D:, da provare.
 
 ## Idee non ancora fatte
 
