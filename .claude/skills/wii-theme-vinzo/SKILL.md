@@ -63,6 +63,10 @@ Usa `tools/dump_tev.py` per vedere gli stage quando ci sono.
   `chanTtl`, target 4-6 = c1, 8-10 = c2). `build_vinzo.py` applica la stessa regola ai colori
   animati (`patch_anim_colors`); controlla sempre con `tools/dump_anim.py`.
 - `board.ash/my_BackPic_a` è lo sfondo della bacheca (UV 0..38 ripetute: va portato a 0..1).
+- **Sfondo del menu = una copia per pagina, affiancate.** Sullo schermo 16:9 si vede ~9% finale
+  dell'immagine sia a sinistra (pagina precedente) sia a destra: l'immagine deve essere continua
+  tra i bordi e la firma va nell'ultimo 8% in alto. La griglia copre il resto: conta la luce
+  nei margini e negli spazi tra le schede. Controlla con `tools/simulate_menu.py`.
 
 ## Regole di sicurezza (importanti)
 

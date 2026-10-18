@@ -51,7 +51,13 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
   potenza di 2 usata con wrap REPEAT, set UV sbagliato su `BaseMask`, UV 0..38 nella bacheca,
   colori dei pulsanti reimpostati dalle animazioni RLMC.
 - **v3**: texture 512x256 (menu) e 512x512 CMPR (bacheca) con wrap clamp e UV 0..1, colori animati
-  corretti. File: `D:\themes\vinzo_material_dark_v3_4.3E.csm`. In attesa di test sulla TV.
+  corretti.
+- Test v3: sfondo disegnato bene, ma ogni pagina ha la sua copia affiancata → a sinistra si vede la
+  fine dell'immagine della pagina precedente ("VinZo" tagliato) e la griglia copre quasi tutto.
+- **v4**: sfondo dedicato (`menu_bg_tex`) continuo tra bordo destro e sinistro, onde più luminose,
+  firma su due righe nell'ultimo 8% a destra, in alto (si vede intera in entrambi gli angoli).
+  Simulazione: `preview/simulazione_menu.png` (`tools/simulate_menu.py`, geometria dalle foto).
+  File: `D:\themes\vinzo_material_dark_v4_4.3E.csm`. In attesa di test sulla TV.
 
 ## 6. Decisioni e preferenze dell'utente
 

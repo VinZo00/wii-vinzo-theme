@@ -277,6 +277,40 @@ def wallpaper_tex(path, out_w=544, out_h=408):
     return np.array(tex.convert("RGBA"))
 
 
+def menu_bg_tex(path, out_w=512, out_h=256):
+    """Sfondo del menu principale.
+
+    Ogni pagina di canali ha la sua copia dello sfondo e le pagine sono affiancate: lo schermo
+    mostra a sinistra la fine dell'immagine della pagina precedente e a destra la fine di quella
+    corrente (misurato dalle foto: l'ultimo ~9% della larghezza). Quindi l'immagine deve essere
+    continua tra bordo destro e sinistro, e la firma va nell'ultimo 8% a destra.
+    """
+    W, H = 1216, 512  # proporzioni fisiche del pannello 512x288 su TV 16:9
+    src = Image.open(path).convert("RGB")
+    sw, sh = src.size
+    if sw / sh > W / H:
+        nw = int(sh * W / H); src = src.crop(((sw - nw) // 2, 0, (sw - nw) // 2 + nw, sh))
+    else:
+        nh = int(sw * H / W); src = src.crop((0, 0, sw, nh))  # parte alta: le onde viola
+    a = np.asarray(src.resize((W, H), Image.LANCZOS), dtype=np.float32) / 255.0
+    # Raccordo senza cucitura: al centro l'immagine, ai bordi la stessa spostata di mezza larghezza
+    b = np.roll(a, W // 2, axis=1)
+    m = (np.abs(np.arange(W) - W / 2) / (W / 2)) ** 2
+    img = a * (1 - m[None, :, None]) + b * m[None, :, None]
+    # Più luce sulle onde: lo sfondo si vede solo nei margini e tra le schede
+    img = np.clip(img ** 0.7 * 1.15, 0, 1)
+    canvas = Image.fromarray((img * 255).astype(np.uint8), "RGB").convert("RGBA")
+    d = ImageDraw.Draw(canvas)
+    # In alto, sopra la prima riga di schede (a destra le schede della pagina dopo partono da ~y 50)
+    f1 = ImageFont.truetype(F + "segoeui.ttf", 17)
+    f2 = ImageFont.truetype(F + "segoeuib.ttf", 21)
+    cx = int(W * 0.955)
+    d.text((cx, 14), "Mod by", font=f1, fill=MUTED + (235,), anchor="mm")
+    d.text((cx, 34), "VinZo", font=f2, fill=ACCENT + (255,), anchor="mm")
+    canvas.convert("RGB").save(os.path.join(PREVIEW_DIR, "sfondo_menu.png"))
+    return np.array(canvas.resize((out_w, out_h), Image.LANCZOS))
+
+
 # ---------- archivi ----------
 
 def load_arc(name):
@@ -395,7 +429,7 @@ def chansel_tex(path, content):
     name = os.path.basename(path)[:-4]
     if name == "my_TVSheet_b":
         # Dimensioni potenza di 2: le texture ripetute (wrap REPEAT) le richiedono su GX
-        img = wallpaper_tex(WALLPAPER, 512, 256)
+        img = menu_bg_tex(WALLPAPER, 512, 256)
         save_preview("chanSel", path, img)
         return make_tpl(content, img, 4)  # RGB565, sfondo opaco
     digits = {f"my_Clock_a{i}": str(i) for i in range(10)}
