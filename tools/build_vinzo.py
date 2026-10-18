@@ -59,12 +59,20 @@ def generic_rule(name, c1, c2, c3):
     return out if any(out) else None
 
 
+# Sfondo del menu principale: tinta piatta (None = immagine da menu_bg_tex)
+FLAT_BG = (16, 12, 22)
+# Immagine della barra inferiore / bacheca (my_BackPic_a): se esiste si usa così com'è
+BAR_IMAGE = os.path.join(os.path.dirname(WALLPAPER), "barra.png")
+
 BG_PANES = [f"Picture_0{i}" for i in range(5)] + [f"BaseMask{i}" for i in range(5)]
 
 
 def chansel_rule(name, c1, c2, c3):
     base = generic_rule(name, c1, c2, c3) or [None, None, None]
     if name in BG_PANES and c2[:3] == (245, 245, 245):  # solo quelli di my_IplTop_a, non my_TVMask_a
+        if FLAT_BG:
+            # tinta piatta: c1 == c2 rende il colore indipendente dalla texture a righe
+            return [FLAT_BG + (c1[3],), FLAT_BG + (c2[3],), None]
         # TEV: lerp(C0, C1, texture) -> con nero/bianco mostra la texture (lo sfondo) così com'è
         return [(0, 0, 0, c1[3]), (255, 255, 255, c2[3]), None]
     if name.startswith(("Picture_", "board")) and c2[:3] == (245, 245, 245):
@@ -405,7 +413,7 @@ FULL_UV = (0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0)
 
 
 def chansel_lyt(path, content):
-    if not path.endswith("my_IplTop_a.brlyt"):
+    if not path.endswith("my_IplTop_a.brlyt") or FLAT_BG:
         return content, []
     # Lo sfondo era una riga ripetuta 36 volte: ora l'immagine copre il pannello una volta sola.
     # Picture_xx e BaseMask generano la coordinata della texture sfondo dal set UV 1 (TEX1).
@@ -427,7 +435,7 @@ def board_lyt(path, content):
 
 def chansel_tex(path, content):
     name = os.path.basename(path)[:-4]
-    if name == "my_TVSheet_b":
+    if name == "my_TVSheet_b" and not FLAT_BG:
         # Dimensioni potenza di 2: le texture ripetute (wrap REPEAT) le richiedono su GX
         img = menu_bg_tex(WALLPAPER, 512, 256)
         save_preview("chanSel", path, img)
@@ -475,7 +483,12 @@ def cmnbtn_tex(path, content):
 
 def board_tex(path, content):
     if os.path.basename(path) == "my_BackPic_a.tpl":
-        img = wallpaper_tex(WALLPAPER, 512, 512)
+        if os.path.exists(BAR_IMAGE):
+            # immagine fornita dall'utente (16:9, firma già inclusa): solo ridimensionata
+            bar = Image.open(BAR_IMAGE).convert("RGBA").resize((512, 512), Image.LANCZOS)
+            img = np.array(bar)
+        else:
+            img = wallpaper_tex(WALLPAPER, 512, 512)
         save_preview("board", path, img)
         # CMPR (4 bit/pixel): +~100 KB di memoria come azurenight, invece di +430 KB con RGB5A3
         return make_tpl(content, img, 14)
