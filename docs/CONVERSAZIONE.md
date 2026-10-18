@@ -66,6 +66,9 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - Bug: dopo il cambio canale il bordo di "Avvia" diventava lilla chiaro. Causa: animazione On/OffBtn
   grigio→blu con canale G a chiave singola (190). Fix: stato spento = (110,64,120), stesso G dell'accento.
 - **v5**: tinta piatta + fix pulsanti. File: `D:\themes\vinzo_material_dark_v5_4.3E.csm`.
+- **v6**: immagine della barra creata dall'utente (`assets/barra.jpg`, onde viola in basso + "mod by VinZo"
+  centrato), texture 1024x512 CMPR (firma leggibile, board +248 KB). File:
+  `D:\themes\vinzo_material_dark_v6_4.3E.csm`. In attesa di test sulla TV.
 
 ## 6. Decisioni e preferenze dell'utente
 
