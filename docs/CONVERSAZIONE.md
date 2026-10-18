@@ -57,7 +57,15 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - **v4**: sfondo dedicato (`menu_bg_tex`) continuo tra bordo destro e sinistro, onde più luminose,
   firma su due righe nell'ultimo 8% a destra, in alto (si vede intera in entrambi gli angoli).
   Simulazione: `preview/simulazione_menu.png` (`tools/simulate_menu.py`, geometria dalle foto).
-  File: `D:\themes\vinzo_material_dark_v4_4.3E.csm`. In attesa di test sulla TV.
+  File: `D:\themes\vinzo_material_dark_v4_4.3E.csm`.
+- Test v4: "va meglio" ma l'effetto non piace. Decisione: **sfondo menu a tinta piatta** (16,12,22) e
+  immagine personalizzata per la barra inferiore (`my_BackPic_a`, la stessa tecnica di azurenight, che
+  usa una foto notturna 544x408). L'utente la crea 1920x1080 seguendo `assets/modello_barra_1920x1080.png`
+  e la salva come `assets/barra.png` (la build la usa se esiste). Azurenight sconsigliato come base
+  (azzurro, bassa risoluzione, non nostro).
+- Bug: dopo il cambio canale il bordo di "Avvia" diventava lilla chiaro. Causa: animazione On/OffBtn
+  grigio→blu con canale G a chiave singola (190). Fix: stato spento = (110,64,120), stesso G dell'accento.
+- **v5**: tinta piatta + fix pulsanti. File: `D:\themes\vinzo_material_dark_v5_4.3E.csm`.
 
 ## 6. Decisioni e preferenze dell'utente
 

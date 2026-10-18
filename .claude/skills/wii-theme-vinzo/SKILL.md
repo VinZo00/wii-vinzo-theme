@@ -62,6 +62,12 @@ Usa `tools/dump_tev.py` per vedere gli stage quando ci sono.
 - **Le animazioni RLMC sovrascrivono i colori dei materiali** (es. pulsante "Avvia" in
   `chanTtl`, target 4-6 = c1, 8-10 = c2). `build_vinzo.py` applica la stessa regola ai colori
   animati (`patch_anim_colors`); controlla sempre con `tools/dump_anim.py`.
+- Nelle animazioni un canale può avere **una sola chiave** costante (es. G=190 in On/OffBtn):
+  gli stati che si alternano devono avere lo stesso valore su quel canale, altrimenti escono colori
+  misti (bordo lilla chiaro di "Avvia").
+- `my_BackPic_a` (board.ash) è anche lo **sfondo della barra inferiore** nel menu principale (si vede
+  sotto la curva): è lì che azurenight mette la sua foto. Modello: `assets/modello_barra_1920x1080.png`,
+  immagine utente: `assets/barra.png`. Sfondo del menu: `FLAT_BG` in `build_vinzo.py`.
 - `board.ash/my_BackPic_a` è lo sfondo della bacheca (UV 0..38 ripetute: va portato a 0..1).
 - **Sfondo del menu = una copia per pagina, affiancate.** Sullo schermo 16:9 si vede ~9% finale
   dell'immagine sia a sinistra (pagina precedente) sia a destra: l'immagine deve essere continua

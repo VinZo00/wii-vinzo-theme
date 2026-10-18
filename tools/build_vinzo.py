@@ -91,7 +91,21 @@ def chansel_rule(name, c1, c2, c3):
     return base
 
 
+ACCENT_OFF = (110, 64, 120)  # bordo pulsante "spento": stesso G dell'accento, vedi sotto
+
+
 def chanttl_rule(name, c1, c2, c3):
+    if name.endswith("_Shade"):
+        # Le animazioni On/OffBtn passano dal grigio (190,190,190) al blu, ma il canale G ha una
+        # sola chiave (190) fissa per tutta l'animazione: grigio e accento devono avere lo stesso G,
+        # altrimenti il bordo resta (224,190,251) lilla chiaro.
+        def f(c):
+            if is_wii_blue(c):
+                return ACCENT + (c[3],)
+            if c[0] == c[1] == c[2] and c[0] >= 150:
+                return ACCENT_OFF + (c[3],)
+            return None
+        return [f(c1), f(c2), None]
     if name == "Base0":
         return [BAR[0] + (c1[3],), BAR[1] + (c2[3],), None]
     if name.startswith(("BtnA", "BtnB")) and name[4:5].isdigit() and not name.endswith("_Shade"):
