@@ -46,7 +46,12 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
   Un "glitch" visto dopo un riavvio era dovuto all'HDMI, non al tema.
 - **v2** (attuale): sfondo e firma su `chanSel.ash/my_TVSheet_b` con UV corrette; tematizzata la
   schermata del canale (`chanTtl.ash`). File: `D:\themes\vinzo_material_dark_v2_4.3E.csm`.
-  In attesa di test sulla TV.
+- Test v2 (foto in Download, 18/10 02:40): sfondo a strisce e slot bianchi nel menu, bacheca con
+  sfondo ripetuto a strisce verticali, pulsante "Avvia" ancora bianco. Cause: texture 512x288 non
+  potenza di 2 usata con wrap REPEAT, set UV sbagliato su `BaseMask`, UV 0..38 nella bacheca,
+  colori dei pulsanti reimpostati dalle animazioni RLMC.
+- **v3**: texture 512x256 (menu) e 512x512 CMPR (bacheca) con wrap clamp e UV 0..1, colori animati
+  corretti. File: `D:\themes\vinzo_material_dark_v3_4.3E.csm`. In attesa di test sulla TV.
 
 ## 6. Decisioni e preferenze dell'utente
 

@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import u8, lz77, tpl, brlyt
+from find_anim_colors import parse_brlan
 
 BASE_APP, ARC_DIR, WALLPAPER, OUT_CSM, PREVIEW_DIR = sys.argv[1:6]
 
@@ -286,11 +287,71 @@ def save_preview(arc, path, img):
     Image.fromarray(img, "RGBA").save(os.path.join(PREVIEW_DIR, f"{arc}__{os.path.basename(path)}.png"))
 
 
+def set_wrap(data, mat_names, tex_name, wrap_s, wrap_t):
+    """Imposta il wrap (0=clamp, 1=repeat, 2=mirror) della texture tex_name nei materiali indicati."""
+    buf = bytearray(data)
+    textures, mats, _ = brlyt.parse(data)
+    log = []
+    for m in mats:
+        if m["name"] not in mat_names:
+            continue
+        for i in range(m["flags"] & 0xF):
+            o = m["off"] + 0x40 + i * 4
+            ti, ws, wt = struct.unpack_from(">HBB", buf, o)
+            if textures[ti] == tex_name and (ws, wt) != (wrap_s, wrap_t):
+                struct.pack_into(">HBB", buf, o, ti, wrap_s, wrap_t)
+                log.append(f"{m['name']} wrap {tex_name} ({ws},{wt}) -> ({wrap_s},{wrap_t})")
+    return bytes(buf), log
+
+
+ANIM_SLOTS = {4: 0, 8: 1, 12: 2}  # RLMC: target 4-7 = c1, 8-11 = c2, 12-15 = c3 (RGBA)
+
+
+def patch_anim_colors(data, rule, static):
+    """Applica la stessa regola dei materiali ai colori animati (RLMC), che altrimenti
+    riporterebbero i colori originali durante le animazioni."""
+    buf = bytearray(data)
+    log = []
+    groups = {}
+    for name, tag, idx, target, keys in parse_brlan(data):
+        if tag != "RLMC" or name not in static:
+            continue
+        base = target - target % 4
+        if base not in ANIM_SLOTS or target % 4 == 3:
+            continue
+        for frame, value, slope, voff in keys:
+            if voff is None:
+                continue
+            groups.setdefault((name, base, frame), {})[target % 4] = (value, voff)
+    for (name, base, frame), ch in groups.items():
+        slot = ANIM_SLOTS[base]
+        cols = [list(c) for c in static[name]]
+        for k, (v, _) in ch.items():
+            cols[slot][k] = round(v)
+        res = rule(name, *[tuple(c) for c in cols])
+        if not res or res[slot] is None:
+            continue
+        for k, (v, voff) in ch.items():
+            nv = float(res[slot][k])
+            if nv != v:
+                struct.pack_into(">f", buf, voff, nv)
+                log.append(f"anim {name} c{slot + 1}[{'RGB'[k]}] frame {frame:.0f}: {v:.0f} -> {nv:.0f}")
+    return bytes(buf), log
+
+
 def process(arc_name, rule, tex_fn, lyt_fn=None):
     entries = load_arc(arc_name)
+    static = {}
+    for path, is_dir, content in entries:
+        if not is_dir and path.endswith(".brlyt"):
+            for m in brlyt.parse(content)[1]:
+                static.setdefault(m["name"], (m["c1"], m["c2"], m["c3"]))
     out = []
     log = []
     for path, is_dir, content in entries:
+        if not is_dir and path.endswith(".brlan"):
+            content, l = patch_anim_colors(content, rule, static)
+            log += [f"  {path}: {x}" for x in l]
         if not is_dir and path.endswith(".brlyt"):
             content, l = edit_materials(content, rule)
             log += [f"  {path}: {x}" for x in l]
@@ -312,16 +373,29 @@ FULL_UV = (0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0)
 def chansel_lyt(path, content):
     if not path.endswith("my_IplTop_a.brlyt"):
         return content, []
-    # Lo sfondo era una riga ripetuta 36 volte: ora l'immagine copre il pannello una volta sola
-    content, l1 = set_uv(content, [f"Picture_0{i}" for i in range(5)], 1, FULL_UV)
-    content, l2 = set_uv(content, [f"BaseMask{i}" for i in range(5)], 0, FULL_UV)
+    # Lo sfondo era una riga ripetuta 36 volte: ora l'immagine copre il pannello una volta sola.
+    # Picture_xx e BaseMask generano la coordinata della texture sfondo dal set UV 1 (TEX1).
+    bg = [f"Picture_0{i}" for i in range(5)] + [f"BaseMask{i}" for i in range(5)]
+    content, l1 = set_uv(content, bg, 1, FULL_UV)
+    content, l2 = set_wrap(content, bg, "my_TVSheet_b.tpl", 0, 0)
+    return content, l1 + l2
+
+
+def board_lyt(path, content):
+    if not path.endswith("my_IplTop_c.brlyt"):
+        return content, []
+    # Lo sfondo della bacheca era una striscia 8px ripetuta 38 volte in orizzontale
+    names = ["TopBack_a", "TopBack_b", "TopBack_c"]
+    content, l1 = set_uv(content, names, 0, FULL_UV)
+    content, l2 = set_wrap(content, names, "my_BackPic_a.tpl", 0, 0)
     return content, l1 + l2
 
 
 def chansel_tex(path, content):
     name = os.path.basename(path)[:-4]
     if name == "my_TVSheet_b":
-        img = wallpaper_tex(WALLPAPER, 512, 288)
+        # Dimensioni potenza di 2: le texture ripetute (wrap REPEAT) le richiedono su GX
+        img = wallpaper_tex(WALLPAPER, 512, 256)
         save_preview("chanSel", path, img)
         return make_tpl(content, img, 4)  # RGB565, sfondo opaco
     digits = {f"my_Clock_a{i}": str(i) for i in range(10)}
@@ -367,7 +441,7 @@ def cmnbtn_tex(path, content):
 
 def board_tex(path, content):
     if os.path.basename(path) == "my_BackPic_a.tpl":
-        img = wallpaper_tex(WALLPAPER)
+        img = wallpaper_tex(WALLPAPER, 512, 512)
         save_preview("board", path, img)
         # CMPR (4 bit/pixel): +~100 KB di memoria come azurenight, invece di +430 KB con RGB5A3
         return make_tpl(content, img, 14)
@@ -381,7 +455,7 @@ def no_tex(path, content):
 JOBS = [
     ("chanSel.ash", chansel_rule, chansel_tex, chansel_lyt),
     ("cmnBtn.ash", cmnbtn_rule, cmnbtn_tex, None),
-    ("board.ash", board_rule, board_tex, None),
+    ("board.ash", board_rule, board_tex, board_lyt),
     ("cursor.ash", cursor_rule, no_tex, None),
     ("chanTtl.ash", chanttl_rule, no_tex, None),
 ]

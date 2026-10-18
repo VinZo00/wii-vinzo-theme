@@ -53,6 +53,17 @@ Colori dei materiali BRLYT: `c1`/`c2`/`c3` a offset 0x14/0x1C/0x24 dal materiale
 Con un solo texture e nessuno stage TEV custom il risultato è `lerp(c1, c2, texture)`.
 Usa `tools/dump_tev.py` per vedere gli stage quando ci sono.
 
+## Lezioni imparate dai test sulla TV
+
+- **Texture con wrap REPEAT devono avere dimensioni potenza di 2** (GX). Una 512x288 ripetuta
+  ha dato sfondo a strisce e slot bianchi (v2). Usa 512x256/512x512 e/o wrap clamp (0).
+- **Quale set UV usa un pannello lo decide il TexCoordGen** del materiale (src 4 = TEX0,
+  5 = TEX1), non l'ordine delle texture: `BaseMask*` e `Picture_0x` usano UV1 per lo sfondo.
+- **Le animazioni RLMC sovrascrivono i colori dei materiali** (es. pulsante "Avvia" in
+  `chanTtl`, target 4-6 = c1, 8-10 = c2). `build_vinzo.py` applica la stessa regola ai colori
+  animati (`patch_anim_colors`); controlla sempre con `tools/dump_anim.py`.
+- `board.ash/my_BackPic_a` è lo sfondo della bacheca (UV 0..38 ripetute: va portato a 0..1).
+
 ## Regole di sicurezza (importanti)
 
 - Non superare di molto gli aumenti di memoria di azurenight per archivio (riferimento:
