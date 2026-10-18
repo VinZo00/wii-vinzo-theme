@@ -63,7 +63,9 @@ def generic_rule(name, c1, c2, c3):
 FLAT_BG = (16, 12, 22)
 # Immagine della barra inferiore / bacheca (my_BackPic_a): se esiste si usa così com'è
 BAR_IMAGE = os.path.join(os.path.dirname(WALLPAPER), "barra.jpg")
-BAR_TEX = (1024, 512)  # 16:9 -> potenza di 2; 1024 di larghezza per tenere leggibile la firma
+# 512x512 CMPR (board.ash 1.21 MB decompresso) funziona; 1024x512 (1.34 MB) dà SCHERMO NERO dopo
+# la schermata di avvertenze: board.ash ha un limite di memoria tra questi due valori.
+BAR_TEX = (512, 512)
 
 BG_PANES = [f"Picture_0{i}" for i in range(5)] + [f"BaseMask{i}" for i in range(5)]
 
