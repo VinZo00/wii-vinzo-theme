@@ -1,0 +1,12 @@
+# Contenuti Nintendo: restano solo in locale, non vanno pubblicati
+base/
+*.app
+*.csm
+*.ash
+*.arc
+
+# File generati
+build/
+work/
+.venv/
+__pycache__/
