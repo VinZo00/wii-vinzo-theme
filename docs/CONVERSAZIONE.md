@@ -102,6 +102,17 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - **GX v3**: predefinito r1283 + azzurri → viola + sfondo predefinito ricolorato (foglio scuro, barra
   scura con le onde e "mod by VinZo", linea viola) + orologio bianco. Pannelli chiari invariati. Su D:.
 
+## 9. Altre app installate su D: (18/10/2026)
+
+- **ftpsrv 1.2.2** (ITotalJustice, GitHub, `wii.zip`) → `D:\apps\ftpsrv` + `D:\config\ftpsrv\config.ini`
+  (utente `vinzo`, password solo sulla SD, NON nel repo; porta 21).
+- **Homebrew Browser 0.3.9e** = app dell'Open Shop Channel → `D:\apps\homebrew_browser` (alternativa
+  se instabile: LibreShop).
+- **WiiXplorer** e **SaveGame Manager GX** (da Open Shop Channel) → `D:\apps\wiixplorer`,
+  `D:\apps\SaveGame_Manager_GX`.
+- **CTGP-R v1.03**: requisiti ufficiali (chadsoft.co.uk) = disco originale di Mario Kart Wii + SD ≥ 768 MB;
+  download solo da Mega (manuale). Le ISO/USB loader non sono indicate come supportate.
+
 ## 8. Forwarder di USB Loader GX
 
 - WAD ufficiale dal README di wiidev/usbloadergx: `USBLoaderGX_forwarder[UNEO].wad` → `D:\wad\`.
