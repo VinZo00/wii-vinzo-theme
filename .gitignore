@@ -10,3 +10,6 @@ build/
 work/
 .venv/
 __pycache__/
+
+# Temi di terzi usati come base (non nostri)
+third_party/

@@ -113,6 +113,21 @@ risultato è `lerp(c1, c2, texture)`. TexCoordGen src 4 = UV0, 5 = UV1.
 - `base/` e `*.csm` contengono dati Nintendo: mai nel repository Git.
 - Dopo ogni test confermato: aggiorna questa skill, `docs/CONVERSAZIONE.md`, commit + push.
 
+## Temi coordinati: Homebrew Channel e USB Loader GX
+
+Generati da `.\build_extras.ps1` (copia anche su D: se collegata). Nessun rischio per la console:
+cambiano solo l'aspetto delle app.
+- **HBC** (`tools/hbc_theme.py`): tutte le 33 immagini disegnate da noi (dimensioni del tema
+  "Material Dark" v1.4 di Shining Wing), font Roboto, `theme.xml` con colori VinZo. Sfondo =
+  `assets/barra.jpg` (640x480 crop 4:3, `background_wide` 852x480). Si installa aprendo l'app
+  `HBCtheme_VinZo` dall'HBC. Anteprima: `tools/simulate_hbc.py`.
+- **USB Loader GX** (`tools/gx_theme.py`): parte da azurenight (`third_party/gx_azurenight`, non nel
+  repo). Azzurri → viola; pannelli chiari grandi (o tasti/tooltip) → scuri; testi neri → bianchi.
+  Esclusi: loghi PEGI/ESRB/CERO, controller, copertine di default, logo GX, cursori. Sfondi da
+  `barra.jpg`. Nel `.them` il valore vero è il **msgstr** (il msgid è il predefinito): si convertono
+  entrambi. Si attiva da USB Loader GX → Impostazioni → Tema → "VinZo Material Dark".
+- Stato: **generati, da provare sulla TV** (18/10/2026).
+
 ## Idee non ancora fatte
 
 - Temi coordinati per impostazioni (`setupBtn`, `setupSel`), dialoghi (`dlgWdw`), menu SD

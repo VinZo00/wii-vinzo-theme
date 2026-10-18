@@ -79,6 +79,15 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
   viola solo in basso; la vecchia è `assets/barra_v7.jpg`). board.ash identico alla v7 (1.212.416 byte).
   Su D: ci sono sia la v7 (stabile) sia la v8 (da provare).
 
+## 7. Temi coordinati per Homebrew Channel e USB Loader GX
+
+- Richiesta: temi simili a VinZo per USB Loader GX e per la lista dell'Homebrew Channel.
+- HBC: tema disegnato da zero (`tools/hbc_theme.py`), schede scure, selezione con bordo/barra viola,
+  frecce circolari, pulsanti a pillola, sfondo = immagine della barra. App `HBCtheme_VinZo`.
+- GX: ricolorazione automatica di azurenight (`tools/gx_theme.py`), 36 pannelli scuriti, 90 icone
+  ricolorate, 55 immagini lasciate com'erano, `.them` convertito (msgid + msgstr).
+- Comando unico: `.\build_extras.ps1`. In attesa di copia su D: e test sulla TV.
+
 ## 6. Decisioni e preferenze dell'utente
 
 - Lingua: italiano.
