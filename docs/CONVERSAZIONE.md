@@ -113,6 +113,16 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - **CTGP-R v1.03**: requisiti ufficiali (chadsoft.co.uk) = disco originale di Mario Kart Wii + SD ≥ 768 MB;
   download solo da Mega (manuale). Le ISO/USB loader non sono indicate come supportate.
 
+## 10. Mario Kart Wii: tutto sbloccato (18/10/2026)
+
+- CTGP-R scartato: le versioni attuali richiedono il disco originale; i metodi "senza disco"
+  (video YouTube) usano ISO complete della vecchia 1.02 scaricate da terzi → non fatto.
+- Salvataggi estratti con SaveGame Manager GX (Device default → `D:\savegames\<titleID>\`), backup
+  completo sul PC in `Documents\Wii\Salvataggi_backup_2026-10-18`.
+- `tools/mkw_unlock.py`: byte di sblocco 0x30–0x37 = FF nelle 4 licenze + CRC-32 a 0x27FFC
+  (verificato sull'originale). Trofei/stelle GP non toccati. Originale anche in `D:\savegames_originale_MKW`.
+- **Testato: funziona** — ogni profilo ha tutto sbloccato.
+
 ## 8. Forwarder di USB Loader GX
 
 - WAD ufficiale dal README di wiidev/usbloadergx: `USBLoaderGX_forwarder[UNEO].wad` → `D:\wad\`.
