@@ -122,7 +122,10 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - `tools/mkw_unlock.py`: byte di sblocco 0x30–0x37 = FF nelle 4 licenze + CRC-32 a 0x27FFC
   (verificato sull'originale). Trofei/stelle GP non toccati. Originale anche in `D:\savegames_originale_MKW`.
 - Sbloccate tutte e 4 le licenze (mario, vit, mario cimm, senza nome). Licenze create dopo partono
-  da zero. Installazione sulla Wii con SaveGame Manager GX: in attesa di conferma dell'utente.
+  da zero.
+- L'utente ha poi creato la licenza **Vinzo** (al posto di "mario"; "mario cimm" cancellata),
+  riestratta e sbloccata allo stesso modo. **Testato sulla Wii: funziona tutto.**
+- Backup sul PC: `Salvataggi_backup_2026-10-18\` (originali) e `...\MKW_con_Vinzo_prima_dello_sblocco\`.
 
 ## 8. Forwarder di USB Loader GX
 
