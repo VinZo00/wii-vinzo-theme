@@ -75,6 +75,9 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - Ripristino dallo schermo nero riuscito con Priiloader (tenere RESET prima di accendere, Wiimote ok).
 - **v7 installata: "è perfetto adesso".** Diventa la versione stabile (tag git `v7`); d'ora in poi si
   lavora su questo tema, con nuove versioni numerate a partire dalla v8.
+- **v8**: nuova immagine della barra dell'utente (`modello_barra_new.jpg` → `assets/barra.jpg`, onde
+  viola solo in basso; la vecchia è `assets/barra_v7.jpg`). board.ash identico alla v7 (1.212.416 byte).
+  Su D: ci sono sia la v7 (stabile) sia la v8 (da provare).
 
 ## 6. Decisioni e preferenze dell'utente
 
