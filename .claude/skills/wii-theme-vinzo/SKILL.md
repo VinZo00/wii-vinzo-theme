@@ -1,105 +1,121 @@
 ---
 name: wii-theme-vinzo
-description: Modificare, ricostruire e installare il tema Wii "Material Dark – Mod by VinZo" (menu di sistema 4.3E, file .csm). Usare per qualsiasi richiesta su colori, sfondo, pulsanti, orologio, firma, nuove schermate del tema, oppure per analizzare archivi .ash/.arc/TPL/BRLYT del menu Wii.
+description: Modificare, ricostruire e installare il tema Wii "Material Dark – Mod by VinZo" (menu di sistema 4.3E, file .csm). Usare per qualsiasi richiesta su colori, sfondo, barra inferiore, pulsanti, orologio, firma, nuove schermate del tema, ripristino della console, oppure per analizzare archivi .ash/.arc/TPL/BRLYT/BRLAN del menu Wii.
 ---
 
 # Tema Wii VinZo — guida operativa
 
-Leggi anche `docs/CONVERSAZIONE.md` per la storia e le decisioni prese.
+Questo è **il tema su cui lavoriamo** (deciso dall'utente il 18/10/2026). Storia completa e
+decisioni: `docs/CONVERSAZIONE.md`. Rispondi sempre in **italiano**.
 
-## Contesto fisso
+## Stato attuale
 
-- Console: Wii PAL, **System Menu 4.3E** (v514, file base `0000009a-v514.app`).
-- Protezioni installate: **Priiloader** (RESET all'accensione), **BootMii come IOS** (no boot2),
-  backup NAND verificato in `Documents\Wii\Wii_NAND_Backup_2026-10-18`.
-- SD/USB sul PC = unità **D:**. Temi in `D:\themes\`, app in `D:\apps\` (csm-installer, usbloader_gx,
-  Nintendont, priiloader, hackmii_installer, HBCtheme_Material_Dark).
+- **Versione stabile: v7**, installata e confermata funzionante sulla TV ("è perfetto adesso").
+  Commit/tag git `v7`. File: `build/vinzo_material_dark_v7_4.3E.csm` (copia sicura:
+  `build/vinzo_material_dark_STABILE_4.3E.csm`) e `D:\themes\vinzo_material_dark_v7_4.3E.csm`.
+- Contenuto v7:
+  - Menu principale: sfondo **tinta piatta** `FLAT_BG = (16,12,22)`.
+  - Barra inferiore + bacheca: immagine dell'utente `assets/barra.jpg` (1920x1080, onde viola in
+    basso, "mod by VinZo" centrato in basso) → `my_BackPic_a` **512x512 CMPR**.
+  - Barra scura con curva/linea viola, orologio sottile (Segoe UI Light), pulsanti circolari
+    Wii/posta/calendario/matita/+/−, frecce viola, cursore P1 viola.
+  - Schermata del canale: pulsanti "Menu Wii"/"Avvia" scuri con bordo viola, anche dopo il cambio
+    canale (animazioni corrette).
+- Ogni nuova modifica = **nuova versione numerata** (v8, v9…); non sovrascrivere la stabile finché
+  l'utente non conferma sulla TV.
+
+## Contesto fisso della console
+
+- Wii PAL, **System Menu 4.3E** (v514, base `base/0000009a-v514.app`, anche in
+  `D:\themes\original_backup\`).
+- Protezioni: **Priiloader** installato nella NAND (Block Disc/Online Updates), **BootMii come IOS**
+  (no boot2), backup NAND verificato in `Documents\Wii\Wii_NAND_Backup_2026-10-18`.
+- Unità **D:** = SD/USB della Wii quando è collegata al PC (spesso è nella Wii: controlla con
+  `Test-Path D:\` prima di copiare). `D:\themes\` contiene `azurenight.csm` (ripiego sicuro),
+  `azurenight.mym`, `original_backup\`, la versione corrente. `D:\apps\`: csm-installer,
+  usbloader_gx (tema azurenight in `theme\`), Nintendont.
 - Installazione: Homebrew Channel → csm-installer → seleziona `.csm` → A → +.
-- Tema di riferimento **funzionante** sulla console: `D:\themes\azurenight.csm` (usalo come
-  confronto con `tools/compare_theme.py` e come ripiego in caso di problemi).
-- L'utente parla **italiano**: rispondi sempre in italiano.
+
+## Ripristino (da ricordare sempre all'utente prima di un test)
+
+Se dopo l'installazione il menu non parte (schermo nero, blocco):
+1. Wii spenta (se bloccata: POWER sulla console tenuto ~5 s).
+2. **Tieni premuto RESET**, poi premi POWER, e continua a tenere RESET ~5 s → menu Priiloader.
+3. Wiimote (frecce, A) o controller GameCube → **Homebrew Channel** → csm-installer →
+   `azurenight.csm` o il `.csm` stabile → A → +.
+Spiegalo passo passo: l'utente ha avuto dubbi sull'ordine RESET/POWER.
 
 ## Pipeline di build
 
-`.\build.ps1` (da questa cartella):
+`.\build.ps1 -Out "$PWD\build\vinzo_material_dark_vN_4.3E.csm"` (da questa cartella):
 1. `tools/extract_base.py` estrae il base app (archivio U8).
 2. `ASH.exe` (ThemeMii, `Documents\Wii\ThemeMii`) decomprime `layout/common/*.ash` → `work/arc/*.ash.arc`.
-3. `tools/build_vinzo.py` modifica materiali, UV e texture, ricomprime in **LZ77** (header `LZ77`+0x10,
-   come ThemeMii/azurenight) e reinserisce gli archivi nel base → `.csm`.
+3. `tools/build_vinzo.py` modifica materiali, UV, wrap, colori animati e texture, ricomprime in
+   **LZ77** (header `LZ77`+0x10, come ThemeMii/azurenight) e reinserisce gli archivi → `.csm`.
 4. `tools/verify_csm.py` ricarica tutto (TPL, BRLYT, BRLAN) e confronta la struttura col base.
 
-Python: venv in `.venv` (pillow, numpy). Esegui sempre con `python -I`.
+Controlla nel log le dimensioni decompresse di ogni archivio (vedi limiti sotto).
+Python: venv `.venv` (pillow, numpy), sempre `python -I`.
+Anteprime/strumenti: `work/preview/`, `tools/simulate_menu.py`, `tools/dump_layout.py`,
+`tools/dump_tev.py`, `tools/dump_anim.py`, `tools/inspect_tex_mapping.py`, `tools/compare_theme.py`.
+Modello per l'immagine della barra: `assets/modello_barra_1920x1080.png` (`tools/make_bar_template.py`).
 
-## Mappa del menu (scoperta analizzando i file)
+## Dove si cambia cosa (`tools/build_vinzo.py`)
+
+- Palette in cima: `ACCENT (224,64,251)`, `ACCENT_DARK (150,40,170)`, `ACCENT_OFF (110,64,120)`,
+  `BAR (20,15,26)/(28,21,36)`, `SLOT`, `CARD (36,28,42)`, `WHITE (240,240,245)`, `MUTED (200,190,210)`.
+- `FLAT_BG`: colore dello sfondo del menu (mettere `None` per tornare all'immagine `menu_bg_tex`).
+- `BAR_IMAGE` (`assets/barra.jpg`) e `BAR_TEX (512,512)`: immagine della barra/bacheca.
+- Regole per archivio: `chansel_rule`, `cmnbtn_rule`, `board_rule`, `cursor_rule`, `chanttl_rule`;
+  texture: `chansel_tex` (cifre orologio), `cmnbtn_tex` (pulsanti), `board_tex`; layout: `*_lyt`.
+
+## Mappa del menu
 
 - `chanSel.ash` → schermata principale.
-  - `my_IplTop_a.brlyt`: `BaseMask0-4` (sfondo pieno 512x288, TEV `lerp(C0,C1,TEXC)`),
-    `Picture_00-04` (stesso sfondo con maschera slot, stage1 `lerp(C0,C1,TEXC)` su texcoord 1),
-    `Picture_05-09` e `board0-4` (barra inferiore), `Line*` (linea viola), `Edge*` (bordo barra),
-    `Shade*` (ombra). Tutti usavano `my_TVSheet_b` (righe 608x8 ripetute 36 volte).
-  - Lo **sfondo** = `my_TVSheet_b` sostituita col wallpaper + UV impostate a 0..1. Per i pannelli
-    della barra si mette `c1 == c2` così il colore è costante e ignora la texture.
+  - `my_IplTop_a.brlyt`: `BaseMask0-4` (sfondo pieno per pagina) e `Picture_00-04` (sfondo con
+    maschera slot), `Picture_05-09`/`board0-4` (barra), `Line*` (linea viola), `Edge*` (bordo barra),
+    `Shade*` (ombra). Tutti usano `my_TVSheet_b` (righe 608x8). Con `c1 == c2` il colore è piatto.
   - `my_Clock_a.brlyt`: cifre `my_Clock_a0..a9`, due punti `my_Clock_ab` (I4 48x48).
-  - `my_IplTop_b.brlyt` `Ch0` = slot vuoti; `my_IplTop_d` `Cursur_a` = evidenziazione slot.
-  - Attenzione: anche `my_TVMask_a.brlyt` ha un materiale `Picture_00` — non confonderlo.
-- `cmnBtn.ash` → pulsanti in basso: `my_TopBtn_c`/`_b` (Wii), `_a` (posta; l'icona busta è
-  `my_TopBtn_a0` sopra, materiale `BbsMark0`), `_d` calendario, `_e` nuovo messaggio,
-  `my_ComBtn_a/_b` (+/−), `my_arw_a/_b` frecce pagina.
-- `board.ash` → bacheca messaggi (`my_BackPic_a` è il suo sfondo, NON quello del menu).
-- `chanTtl.ash` → schermata di anteprima del canale (pulsanti `BtnA*`/`BtnB*`, barra `Base0`).
-- `cursor.ash` → cursori; `P1_Cat`/`P1_Def` colore giocatore 1 (non toccare le ombre `*S`).
+  - `my_IplTop_b` `Ch0` = slot vuoti; `my_IplTop_d` `Cursur_a` = evidenziazione slot.
+  - Anche `my_TVMask_a.brlyt` ha un materiale `Picture_00`: non confonderlo.
+- `board.ash` → `my_IplTop_c.brlyt` `TopBack_a/b/c` con `my_BackPic_a`: **sfondo della barra
+  inferiore del menu (visibile sotto la curva) e sfondo intero della bacheca**. Data = `T_Day_*`.
+- `cmnBtn.ash` → pulsanti: `my_TopBtn_c`/`_b` (Wii), `_a` (posta; busta `my_TopBtn_a0`, materiale
+  `BbsMark0`), `_d` calendario, `_e` nuovo messaggio, `my_ComBtn_a/_b` (+/−), `my_arw_a/_b` frecce.
+- `chanTtl.ash` → schermata del canale: `BtnA*`/`BtnB*` (pillole), `*_Shade` (bordo), `*_Ac`
+  (evidenziazione), `T_BtnA/B` (testo), `Base0` (barra).
+- `cursor.ash` → `P1_Cat`/`P1_Def` colore giocatore 1 (non le ombre `*S`).
 
-Colori dei materiali BRLYT: `c1`/`c2`/`c3` a offset 0x14/0x1C/0x24 dal materiale (4×s16).
-Con un solo texture e nessuno stage TEV custom il risultato è `lerp(c1, c2, texture)`.
-Usa `tools/dump_tev.py` per vedere gli stage quando ci sono.
+BRLYT: colori materiale `c1`/`c2`/`c3` a offset 0x14/0x1C/0x24 (4×s16); senza stage TEV custom il
+risultato è `lerp(c1, c2, texture)`. TexCoordGen src 4 = UV0, 5 = UV1.
 
-## Lezioni imparate dai test sulla TV
+## Lezioni imparate dai test sulla TV (non ripetere questi errori)
 
-- **Texture con wrap REPEAT devono avere dimensioni potenza di 2** (GX). Una 512x288 ripetuta
-  ha dato sfondo a strisce e slot bianchi (v2). Usa 512x256/512x512 e/o wrap clamp (0).
-- **Quale set UV usa un pannello lo decide il TexCoordGen** del materiale (src 4 = TEX0,
-  5 = TEX1), non l'ordine delle texture: `BaseMask*` e `Picture_0x` usano UV1 per lo sfondo.
-- **Le animazioni RLMC sovrascrivono i colori dei materiali** (es. pulsante "Avvia" in
-  `chanTtl`, target 4-6 = c1, 8-10 = c2). `build_vinzo.py` applica la stessa regola ai colori
-  animati (`patch_anim_colors`); controlla sempre con `tools/dump_anim.py`.
-- Nelle animazioni un canale può avere **una sola chiave** costante (es. G=190 in On/OffBtn):
-  gli stati che si alternano devono avere lo stesso valore su quel canale, altrimenti escono colori
-  misti (bordo lilla chiaro di "Avvia").
-- `my_BackPic_a` (board.ash) è anche lo **sfondo della barra inferiore** nel menu principale (si vede
-  sotto la curva): è lì che azurenight mette la sua foto. Modello: `assets/modello_barra_1920x1080.png`,
-  immagine utente: `assets/barra.png`. Sfondo del menu: `FLAT_BG` in `build_vinzo.py`.
-- `board.ash/my_BackPic_a` è lo sfondo della bacheca (UV 0..38 ripetute: va portato a 0..1).
-- **Sfondo del menu = una copia per pagina, affiancate.** Sullo schermo 16:9 si vede ~9% finale
-  dell'immagine sia a sinistra (pagina precedente) sia a destra: l'immagine deve essere continua
-  tra i bordi e la firma va nell'ultimo 8% in alto. La griglia copre il resto: conta la luce
-  nei margini e negli spazi tra le schede. Controlla con `tools/simulate_menu.py`.
+- **Limite di memoria di `board.ash`: 1.212.416 byte decompressi funziona (v4, v7); 1.343.488 (v6,
+  barra 1024x512) → SCHERMO NERO** dopo la schermata avvertenze. Tieni `my_BackPic_a` ≤ 512x512
+  CMPR. Per gli altri archivi aumenta per piccoli passi e annota qui ogni limite trovato.
+- Texture con wrap REPEAT → dimensioni **potenza di 2** (512x288 ripetuta = strisce, v2).
+- Il set UV di un pannello lo decide il TexCoordGen, non l'ordine delle texture.
+- `my_BackPic_a` aveva UV 0..38 ripetute: portate a 0..1 con wrap clamp.
+- Le animazioni RLMC (target 4-6 = c1, 8-10 = c2) sovrascrivono i colori: `patch_anim_colors`
+  applica le stesse regole. Un canale con **una sola chiave** resta fisso per tutta l'animazione:
+  gli stati alternati devono avere lo stesso valore su quel canale (bordo "Avvia" lilla, v4/v5).
+- Lo sfondo del menu è una copia per pagina, affiancate: un'immagine lì si vede solo ai margini e
+  tra le schede, con cuciture. L'utente ha preferito la **tinta piatta**.
+- Un "glitch" visto una volta dopo un riavvio era l'HDMI, non il tema.
 
-- **Limite di memoria di `board.ash`:** 1.212.416 byte decompressi (v4/v7) funziona; 1.343.488 (v6,
-  barra 1024x512 CMPR) → **schermo nero dopo la schermata avvertenze**. Tieni `my_BackPic_a` a
-  512x512 CMPR o meno. Gli altri archivi hanno margini diversi: aumenta per piccoli passi.
+## Regole di sicurezza
 
-## Regole di sicurezza (importanti)
-
-- Non superare di molto gli aumenti di memoria di azurenight per archivio (riferimento:
-  board +104 KB, chanSel +49 KB, ma sdButton +540 KB ha funzionato). Preferisci CMPR (4 bpp)
-  o RGB565 per immagini grandi; RGB5A3 solo se serve trasparenza.
-- Cambiare formato/dimensioni di una TPL è sicuro (azurenight lo fa), ma mantieni lo stesso
-  file e lo stesso nome; non aggiungere né rimuovere file dagli archivi.
-- Non modificare la lunghezza di BRLYT/BRLAN: solo patch di valori in place.
-- Dopo ogni build esegui `verify_csm.py` e mostra all'utente le anteprime prima di installare.
-- Ricorda sempre all'utente il ripristino: RESET → Priiloader → Homebrew Channel →
-  csm-installer → `azurenight.csm` o `original_backup`.
+- Cambiare formato/dimensioni di una TPL è ok; non aggiungere/rimuovere file dagli archivi; non
+  cambiare la lunghezza di BRLYT/BRLAN (solo patch in place).
+- Dopo ogni build: `verify_csm.py`, anteprime all'utente, poi copia su `D:\themes` (togliendo le
+  versioni di prova vecchie, mai `azurenight.csm` né `original_backup`).
 - `base/` e `*.csm` contengono dati Nintendo: mai nel repository Git.
-
-## Palette attuale
-
-Accento `#E040FB` (224,64,251), accento scuro (150,40,170), barra (20,15,26)/(28,21,36),
-schede (36,28,42), bianco (240,240,245), testo secondario (200,190,210).
-Tutte definite in cima a `tools/build_vinzo.py`.
+- Dopo ogni test confermato: aggiorna questa skill, `docs/CONVERSAZIONE.md`, commit + push.
 
 ## Idee non ancora fatte
 
-- Temi coordinati per dialoghi, impostazioni (`setupBtn`, `setupSel`, `dlgWdw`), menu SD
+- Temi coordinati per impostazioni (`setupBtn`, `setupSel`), dialoghi (`dlgWdw`), menu SD
   (`sdChanSel`, `sdChanTtl`), schermata di avvio (`health.ash`).
-- Esportare il tema anche come `.mym` (solo differenze) per condividerlo senza dati Nintendo.
+- Esportare anche come `.mym` (solo differenze) per condividerlo senza dati Nintendo.
 - Tema coordinato per USB Loader GX (PNG + `.them`).

@@ -6,18 +6,20 @@ menu originale della console, senza ThemeMii.
 
 ![Anteprima concettuale](preview/anteprima_wii_material.jpg)
 
+**Versione stabile: v7** (tag `v7`), testata sulla TV.
+
 ## Cosa cambia
 
 | Parte | Archivio | Modifica |
 |---|---|---|
-| Sfondo dietro i canali + firma | `chanSel.ash` | `my_TVSheet_b` → wallpaper 512x288 RGB565, UV dei pannelli `Picture_00-04`/`BaseMask0-4` portate a 0..1 |
+| Sfondo dietro i canali | `chanSel.ash` | tinta piatta (16,12,22) sui materiali `Picture_00-04`/`BaseMask0-4` |
 | Barra inferiore | `chanSel.ash` | materiali `board*`, `Picture_05-09` scuri, `Line*`/`Edge*` viola |
+| Immagine sotto la barra + bacheca | `board.ash` | `my_BackPic_a` → `assets/barra.jpg` 512x512 CMPR, UV 0..1 |
 | Orologio | `chanSel.ash` | cifre ridisegnate (Segoe UI Light) in I4 48x48, materiali bianchi |
 | Slot vuoti | `chanSel.ash` | materiale `Ch0` scuro |
 | Pulsanti Wii/posta/calendario/+/−/frecce | `cmnBtn.ash` | texture ridisegnate RGB5A3 |
-| Sfondo bacheca messaggi | `board.ash` | `my_BackPic_a` → wallpaper 544x408 CMPR |
 | Cursore P1 | `cursor.ash` | colore viola |
-| Schermata del canale | `chanTtl.ash` | barra e pulsanti scuri, testo bianco, evidenziazione viola |
+| Schermata del canale | `chanTtl.ash` | pulsanti scuri con bordo viola (anche nelle animazioni) |
 
 Tutti gli altri archivi (impostazioni, dialoghi, menu SD…) restano originali.
 

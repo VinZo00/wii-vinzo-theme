@@ -72,6 +72,9 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - Test v6: **schermo nero** dopo la schermata avvertenze. Causa più probabile: board.ash troppo grande
   (1.34 MB contro 1.21 MB della v4 funzionante). Ripristino: RESET → Priiloader → HBC → csm-installer.
 - **v7**: barra 512x512 CMPR (stessa dimensione della v4). Firma più morbida: meglio ingrandirla nell'immagine.
+- Ripristino dallo schermo nero riuscito con Priiloader (tenere RESET prima di accendere, Wiimote ok).
+- **v7 installata: "è perfetto adesso".** Diventa la versione stabile (tag git `v7`); d'ora in poi si
+  lavora su questo tema, con nuove versioni numerate a partire dalla v8.
 
 ## 6. Decisioni e preferenze dell'utente
 
