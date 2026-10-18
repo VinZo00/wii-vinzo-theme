@@ -95,6 +95,13 @@ Riassunto compatto di come è stata preparata la Wii e di come è nato il tema V
 - **GX v2**: base = tema predefinito ufficiale di USB Loader GX (scelta dell'utente al posto di azurenight),
   colori solo nei `msgstr`, pulsanti ridisegnati più piccoli, nessun font personalizzato. Su D:.
 
+- Test GX v2 (foto 11:14): pannelli scuri ma testi neri illeggibili, disposizione diversa dal
+  predefinito. Cause: (1) l'archivio master di GitHub è un ramo vecchio, la versione installata è
+  4.0 r1283 con immagini/posizioni diverse; (2) molti testi del loader sono neri nel codice.
+  Richiesta dell'utente: "parti dal predefinito e applica i colori e gli sfondi".
+- **GX v3**: predefinito r1283 + azzurri → viola + sfondo predefinito ricolorato (foglio scuro, barra
+  scura con le onde e "mod by VinZo", linea viola) + orologio bianco. Pannelli chiari invariati. Su D:.
+
 ## 8. Forwarder di USB Loader GX
 
 - WAD ufficiale dal README di wiidev/usbloadergx: `USBLoaderGX_forwarder[UNEO].wad` → `D:\wad\`.

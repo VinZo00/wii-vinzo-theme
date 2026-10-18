@@ -121,17 +121,24 @@ cambiano solo l'aspetto delle app.
   "Material Dark" v1.4 di Shining Wing), font Roboto, `theme.xml` con colori VinZo. Sfondo =
   `assets/barra.jpg` (640x480 crop 4:3, `background_wide` 852x480). Si installa aprendo l'app
   `HBCtheme_VinZo` dall'HBC. Anteprima: `tools/simulate_hbc.py`.
-- **USB Loader GX** (`tools/gx_theme.py`): base = **tema predefinito del loader** (186 immagini di
-  `data/images` + `Default.them` con tutte le 308 chiavi, da github.com/wiidev/usbloadergx, GPLv3,
-  in `third_party/gx_default`, non nel repo). Pulsanti Wii/impostazioni/HBC/SD/spegni/+ ridisegnati
-  (cerchio scuro al 72% con anello viola); azzurri → viola; pannelli chiari → scuri; testi neri →
-  bianchi. Esclusi: PEGI/ESRB/CERO, controller, copertine di default, logo GX, cursori. Nessun font
-  nel tema → si usa quello originale del loader. Si attiva: Impostazioni → Tema → "VinZo Material Dark".
+- **USB Loader GX** (`tools/gx_theme.py`, v3): base = **tema predefinito della versione installata
+  (4.0 r1283)**: immagini `data/images` e chiavi estratte dal sorgente del tag `v4.0-r1283` con
+  `tools/gx_keys.py` (340 chiavi) → `third_party/gx_r1283` (non nel repo). ATTENZIONE: l'archivio
+  "master" di GitHub è un ramo vecchio, usa sempre il tag della versione installata
+  (`D:\apps\usbloader_gx\meta.xml`). Regola voluta dall'utente: **parti dal predefinito e applica
+  solo colori e sfondi** → disposizione, pannelli e pulsanti predefiniti; azzurri → viola; sfondo
+  predefinito (foglio + barra curva) ricolorato: foglio `FLAT_BG`, barra scura + onde di `barra.jpg`,
+  linea viola; nel `.them` solo azzurri → viola e orologio → bianco.
+- **Molti testi di GX hanno il nero scritto nel codice** (pulsanti di Impostazioni in
+  FlyingButtonsMenu, gameinfo, tooltip, indicatore pagine…): i pannelli devono restare chiari,
+  altrimenti diventano illeggibili (errore della GX v2 scura).
+- Si attiva: Impostazioni → Tema → "VinZo Material Dark".
 - **.them: il `msgid` è la CHIAVE che il loader cerca e NON va mai modificato**; il valore del tema
   va nel `msgstr`. (Prima versione: msgid modificati → chiavi non trovate → testi neri e riquadri
   bianchi.) La cartella del tema su D: va **sostituita**, non unita (file vecchi verrebbero usati).
-- Primo tentativo basato su azurenight scartato dall'utente (pulsanti troppo grossi).
-- Stato (18/10/2026): HBC da provare; GX v2 (base predefinita) copiato su D:, da provare.
+- Storia: v1 da azurenight (pulsanti troppo grossi, msgid modificati), v2 scura da ramo master
+  vecchio (testi neri illeggibili, layout diverso), **v3 = predefinito r1283 + colori/sfondi** su D:.
+- Stato (18/10/2026): HBC da provare; GX v3 copiato su D:, da provare.
 
 ## Idee non ancora fatte
 

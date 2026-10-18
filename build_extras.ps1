@@ -10,7 +10,7 @@ $tp = "$PSScriptRoot\third_party"
     "$tp\hbc_material_dark\Roboto-Regular.ttf" "$tp\hbc_material_dark\Roboto-Medium.ttf" "$PSScriptRoot\build\hbc"
 # Base GX: tema predefinito (data/images + Default.them del sorgente ufficiale wiidev/usbloadergx)
 if (Test-Path "$PSScriptRoot\build\usbloadergx\vinzo") { Remove-Item "$PSScriptRoot\build\usbloadergx\vinzo" -Recurse -Force }
-& $py -I "$PSScriptRoot\tools\gx_theme.py" "$tp\gx_default\Default.them" "$tp\gx_default\images" `
+& $py -I "$PSScriptRoot\tools\gx_theme.py" "$tp\gx_r1283\Default_r1283.them" "$tp\gx_r1283\images" `
     "$PSScriptRoot\assets\barra.jpg" "$PSScriptRoot\build\usbloadergx" | Select-Object -First 1
 if (Test-Path "$Drive\apps") {
     Copy-Item "$PSScriptRoot\build\hbc\apps\HBCtheme_VinZo" "$Drive\apps\" -Recurse -Force
