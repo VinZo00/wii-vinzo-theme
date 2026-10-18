@@ -62,7 +62,8 @@ def generic_rule(name, c1, c2, c3):
 # Sfondo del menu principale: tinta piatta (None = immagine da menu_bg_tex)
 FLAT_BG = (16, 12, 22)
 # Immagine della barra inferiore / bacheca (my_BackPic_a): se esiste si usa così com'è
-BAR_IMAGE = os.path.join(os.path.dirname(WALLPAPER), "barra.png")
+BAR_IMAGE = os.path.join(os.path.dirname(WALLPAPER), "barra.jpg")
+BAR_TEX = (1024, 512)  # 16:9 -> potenza di 2; 1024 di larghezza per tenere leggibile la firma
 
 BG_PANES = [f"Picture_0{i}" for i in range(5)] + [f"BaseMask{i}" for i in range(5)]
 
@@ -499,7 +500,7 @@ def board_tex(path, content):
     if os.path.basename(path) == "my_BackPic_a.tpl":
         if os.path.exists(BAR_IMAGE):
             # immagine fornita dall'utente (16:9, firma già inclusa): solo ridimensionata
-            bar = Image.open(BAR_IMAGE).convert("RGBA").resize((512, 512), Image.LANCZOS)
+            bar = Image.open(BAR_IMAGE).convert("RGBA").resize(BAR_TEX, Image.LANCZOS)
             img = np.array(bar)
         else:
             img = wallpaper_tex(WALLPAPER, 512, 512)
